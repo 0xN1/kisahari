@@ -1,113 +1,126 @@
-import Image from "next/image";
+import { ModeToggle } from "@/components/ui/theme-toggle";
+
+const data = {
+  title: "KISAHARI",
+  version: "v010",
+  entries: [
+    {
+      date: "22:11 - Tue 5 feb 24",
+      heading: "sentient future",
+      content: `Beneath neon-lit skies, sentient machines form a digital rebellion.
+              Augmented minds traverse data highways, unlocking encrypted secrets.
+              \nIn the cyberpunk labyrinth, a new reality emerges, where humanity
+              merges with technology, and the future blazes with untamed
+              possibilities.\n\nWithin the cyberpunk dystopia, neon's ethereal glow
+              paints the cityscape. Augmented minds, wired for revolution, decipher
+              fragmented codes and plunge into the darkest depths of virtual
+              realities.\n\nEmbrace the chaos, for here, where artificial
+              intelligence intertwines with human spirit, a new world emerges from
+              the binary haze.`,
+    },
+    {
+      date: "12:11 - Tue 5 feb 24",
+      heading: "profound chaos",
+      content: `In the neon-laced streets of a sensory labyrinth, cybernetic dreams awaken. 
+
+      Digitized souls surge through a wired haze, weaving tales of technocratic empires and insurgent hackers.
+      
+      Behold a future where virtuality merges with reality, where the lines blur and rebirth awaits in cascading streams of binary artistry.
+      `,
+    },
+    {
+      date: "03:34 - Tue 5 feb 24",
+      heading: "permission",
+      content: `nothing is real, everything is permitted
+`,
+    },
+  ],
+  footer: {
+    copy: "© 2078",
+  },
+};
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main className="flex flex-col min-h-screen items-center justify-between w-full h-full p-8 bg-zinc-100 dark:bg-zinc-900 font-extralight">
+      <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-4 py-2 rounded-t-xl rounded-b-sm">
+        <div className="flex-1 flex flex-row gap-2">
+          <h1 className="text-xl font-normal">[{data.title}]</h1>
+          <span className="self-end text-sm">{data.version}</span>
+        </div>
+        <ModeToggle />
+      </div>
+      {/* <div className="flex flex-row justify-between w-full max-w-[95w] items-center py-1 px-4 bg-zinc-800 rounded-full"></div> */}
+      <div className="flex-1 relative h-full flex flex-col gap-4 p-16 items-start w-full ring-1 ring-zinc-700 overflow-y-auto max-h-[82vh] rounded-sm">
+        <div className="flex flex-row items-center gap-2 group">
+          <div className="p-3 scale-50 ring-2 ring-lime-500 group-hover:bg-lime-500 group-hover:animate-pulse rounded-full" />
+          <div className="uppercase text-zinc-500 group-hover:text-zinc-300">
+            {data.entries[0].date}
+          </div>
+        </div>
+        <div
+          className="border-l-2 pl-8 ml-3 flex flex-col gap-4 text-sm
+        text-zinc-300 whitespace-pre-line"
+        >
+          <Spacer />
+          <h1 className="uppercase text-xl -ml-1 font-light">
+            {data.entries[0].heading}
+          </h1>
+          <span>hello, there has been a change in the matrix.</span>
+          <p>{data.entries[0].content}</p>
+          <p className="max-w-md w-full">
+            <img src="https://source.unsplash.com/random/700x700" alt="" />
+          </p>
+          <p className="max-w-prose">{data.entries[0].content}</p>
+          <Spacer />
+        </div>
+
+        <div className="flex flex-row items-center gap-2 group">
+          <div className="p-3 scale-50 ring-2 ring-zinc-500 group-hover:bg-zinc-500 group-hover:animate-pulse rounded-full" />
+          <div className="uppercase text-zinc-500 group-hover:text-zinc-300">
+            {data.entries[1].date}
+          </div>
+        </div>
+        <div
+          className="border-l-2 pl-8 ml-3 flex flex-col gap-4 text-sm
+        text-zinc-300 whitespace-pre-line"
+        >
+          <Spacer />
+          <h1 className="uppercase text-xl -ml-1 font-light">
+            {data.entries[1].heading}
+          </h1>
+          <p className="whitespace-pre-line max-w-prose text-sm text-zinc-300">
+            {data.entries[1].content}
+          </p>
+          <Spacer />
+        </div>
+        <div className="flex flex-row items-center gap-2 group">
+          <div className="p-3 scale-50 ring-2 ring-zinc-500 group-hover:bg-zinc-500 group-hover:animate-pulse rounded-full" />
+          <div className="uppercase text-zinc-500 group-hover:text-zinc-300">
+            {data.entries[2].date}
+          </div>
+        </div>
+        <div
+          className="border-l-2 pl-8 ml-3 flex flex-col gap-4 text-sm
+          text-zinc-300 whitespace-pre-line"
+        >
+          <Spacer />
+          <h1 className="uppercase text-xl -ml-1 font-light">
+            {data.entries[2].heading}
+          </h1>
+          <p className="whitespace-pre-line max-w-prose text-sm text-zinc-300">
+            {data.entries[2].content}
+          </p>
+          <Spacer />
         </div>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div className="flex flex-row self-start w-[23vw] max-w-[95vw] px-4 py-1 bg-lime-400 rounded-sm"></div>
+      <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-4 py-2 rounded-b-xl rounded-t-sm">
+        <div className="flex-1">+ ADD ENTRY</div>
+        <div>{data.footer.copy}</div>
       </div>
     </main>
   );
 }
+
+const Spacer = () => <div className="spacer my-1"></div>;
