@@ -6,8 +6,8 @@ import EntryDialog from "@/components/entry-dialog";
 import { useState } from "react";
 
 const data = {
-  title: "BUKU-LOG",
-  version: "v001",
+  title: "KISAHARI",
+  version: "v010",
   footer: {
     left_copy: "A JOURNAL BY N1",
     right_copy: "KISAHARI © 2024",
@@ -16,22 +16,10 @@ const data = {
 
 export default async function HomePage({ entries }: { entries: Entry[] }) {
   return (
-    <main className="flex flex-col min-h-screen items-center justify-between w-full h-full p-8 bg-zinc-100/15 dark:bg-zinc-900/10 font-extralight z-10">
-      <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-4 py-2 rounded-t-xl rounded-b-sm">
-        <div className="flex-1 flex flex-row gap-2">
-          <h1 className="text-xl font-normal">[{data.title}]</h1>
-          <span className="self-end text-sm">{data.version}</span>
-        </div>
-        <div className="uppercase py-2">
-          <CurrentTime />
-        </div>
-        {/* <ModeToggle /> */}
-      </div>
+    <Container>
+      <Header />
       {/* <div className="flex flex-row justify-between w-full max-w-[95w] items-center py-1 px-4 bg-zinc-800 rounded-full"></div> */}
-      <div
-        className="flex-1 relative h-full flex flex-col gap-4 p-8 sm:p-16 items-start w-full ring-1 ring-zinc-700
-      overflow-y-auto max-h-[82vh] rounded-sm scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-zinc-900"
-      >
+      <EntriesContainer>
         {entries.map((entry) => (
           <Entry
             key={entry.id}
@@ -40,19 +28,35 @@ export default async function HomePage({ entries }: { entries: Entry[] }) {
             content={entry.content}
           />
         ))}
-      </div>
-      <div className="flex flex-row self-start w-[10vw] max-w-[95vw] px-4 py-1 bg-lime-400 rounded-sm"></div>
-      <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-4 py-2 rounded-b-xl rounded-t-sm">
-        {/* <EntryDialog /> */}
+      </EntriesContainer>
 
-        <div className="text-xs">{data.footer.left_copy}</div>
-        <div className="text-xs">{data.footer.right_copy}</div>
-      </div>
-    </main>
+      <div className="flex flex-row self-start w-[10vw] max-w-[95vw] px-4 py-1 bg-lime-400 rounded-sm"></div>
+
+      <Footer />
+    </Container>
   );
 }
 
 export const Spacer = () => <div className="spacer my-1"></div>;
+
+const Container = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <main className="flex flex-col min-h-screen items-center justify-between w-full h-full p-8 bg-zinc-100/15 dark:bg-zinc-900/10 font-extralight z-10">
+      {children}
+    </main>
+  );
+};
+
+const EntriesContainer = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div
+      className="flex-1 relative h-full flex flex-col gap-4 p-8 sm:p-16 items-start w-full ring-1 ring-zinc-700
+      overflow-y-auto max-h-[82vh] rounded-sm scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-zinc-900"
+    >
+      {children}
+    </div>
+  );
+};
 
 const Entry = ({
   date,
@@ -98,5 +102,31 @@ const Entry = ({
         </div>
       )}
     </>
+  );
+};
+
+const Header = () => {
+  return (
+    <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-4 py-2 rounded-t-xl rounded-b-sm">
+      <div className="flex-1 flex flex-row gap-2">
+        <h1 className="text-xl font-normal">[{data.title}]</h1>
+        <span className="self-end text-sm">{data.version}</span>
+      </div>
+      <div className="uppercase py-2">
+        <CurrentTime />
+      </div>
+      {/* <ModeToggle /> */}
+    </div>
+  );
+};
+
+const Footer = () => {
+  return (
+    <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-4 py-2 rounded-b-xl rounded-t-sm">
+      {/* <EntryDialog /> */}
+
+      <div className="text-xs">{data.footer.left_copy}</div>
+      <div className="text-xs">{data.footer.right_copy}</div>
+    </div>
   );
 };
