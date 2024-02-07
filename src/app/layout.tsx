@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import localFont from "next/font/local";
+import { ReactNode } from "react";
 
 const commitMono = localFont({
   src: "./commit-mono.woff2",
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en">
@@ -41,6 +42,7 @@ export default function RootLayout({
               {children}
             </main>
           </div>
+
           <Toaster />
         </ThemeProvider>
       </body>
@@ -52,8 +54,8 @@ const Background = () => {
   return (
     <>
       {/* <div className="absolute inset-0 -z-10 h-full w-full bg-[linear-gradient(to_right,#777_1px,transparent_1px),linear-gradient(to_bottom,#777_1px,transparent_1px)] bg-[size:60px_60px] pointer-events-none"></div> */}
-      <div className="absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(200%_125%_at_50%_10%,#000_40%,#7d15_55%)] pointer-events-none" />
-      <div className="absolute inset-0 h-full w-full bg-transparent bg-[radial-gradient(#ddd_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none -z-10" />
+      <div className="fixed inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(200%_125%_at_50%_10%,#111_40%,#7d11_55%)] pointer-events-none" />
+      <div className="fixed inset-0 h-full w-full bg-transparent bg-[radial-gradient(#333_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none -z-10" />
     </>
   );
 };
