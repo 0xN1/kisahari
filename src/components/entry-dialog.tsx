@@ -35,20 +35,22 @@ const EntryDialog = () => {
     const res = await addEntry(entry);
 
     if (res.message) {
-      alert(res.message);
+      // alert(res.message);
     } else {
-      alert("Entry added successfully");
+      // alert("Entry added successfully");
       setOpen(false);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="text-xs uppercase">+ ADD ENTRY</DialogTrigger>
+      <DialogTrigger className="text-xs uppercase hover:bg-lime-500 px-6 py-2 hover:text-zinc-800">
+        ADD ENTRY
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="font-mono uppercase text-sm font-thin">
-            + Add entry
+            Add entry
           </DialogTitle>
 
           <Spacer />

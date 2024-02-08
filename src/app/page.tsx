@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import HomePage from "@/app/home";
 
 export default async function Home() {
-  const res = await fetch(process.env.ENTRIES_URL!, {
+  const res = await fetch(process.env.NEXT_PUBLIC_ENTRIES_URL!, {
     next: { revalidate: 60 },
   });
   if (!res.ok) return notFound();

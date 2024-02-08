@@ -14,6 +14,19 @@ const data = {
   },
 };
 
+const calcDayProgress = () => {
+  // calculate current day relative to the start of the year
+  // turn that into a 0-100% value
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff = now.getTime() - start.getTime();
+  const oneDay = 1000 * 60 * 60 * 24;
+  const day = Math.floor(diff / oneDay);
+  const year = now.getFullYear();
+  const daysInYear = year % 4 === 0 ? 366 : 365;
+  return (day / daysInYear) * 100;
+};
+
 export default async function HomePage({ entries }: { entries: Entry[] }) {
   return (
     <Container>
@@ -30,7 +43,23 @@ export default async function HomePage({ entries }: { entries: Entry[] }) {
         ))}
       </EntriesContainer>
 
-      <div className="flex flex-row self-start w-[10vw] max-w-[95vw] px-4 py-1 bg-lime-400 rounded-sm"></div>
+      <div className="w-full relative flex flex-row text-xs justify-between items-center">
+        <div
+          className={cn(
+            "flex flex-row self-start max-w-[95vw] py-2 px-4  bg-lime-400 rounded-[2px]  text-zinc-800",
+            `w-[${calcDayProgress()}vw]`
+            // `w-[92vw]`
+          )}
+        ></div>
+        <span
+          className={cn(
+            calcDayProgress() > 92 ? "text-zinc-800" : "text-lime-400",
+            "absolute right-6 font-medium text-[0.9em]"
+          )}
+        >
+          {calcDayProgress().toFixed(1)}%
+        </span>
+      </div>
 
       <Footer />
     </Container>
@@ -89,7 +118,7 @@ const Entry = ({
       </div>
       {!closed && (
         <div
-          className="border-l-2 pl-8 ml-3 flex flex-col gap-4 text-sm
+          className="sm:border-l-2 pl-2 sm:pl-8 sm:ml-3 flex flex-col gap-4 text-sm
           text-zinc-300 whitespace-pre-line"
         >
           <Spacer />
@@ -107,7 +136,7 @@ const Entry = ({
 
 const Header = () => {
   return (
-    <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-4 py-2 rounded-t-xl rounded-b-sm">
+    <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-6 py-2 rounded-t-xl rounded-b-sm">
       <div className="flex-1 flex flex-row gap-2">
         <h1 className="text-xl font-normal">[{data.title}]</h1>
         <span className="self-end text-sm">{data.version}</span>
@@ -115,17 +144,15 @@ const Header = () => {
       <div className="uppercase py-2">
         <CurrentTime />
       </div>
-      {/* <ModeToggle /> */}
     </div>
   );
 };
 
 const Footer = () => {
   return (
-    <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-4 py-2 rounded-b-xl rounded-t-sm">
-      {/* <EntryDialog /> */}
-
+    <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-6 py-2 rounded-b-xl rounded-t-sm">
       <div className="text-xs">{data.footer.left_copy}</div>
+      <EntryDialog />
       <div className="text-xs">{data.footer.right_copy}</div>
     </div>
   );

@@ -11,9 +11,7 @@ const CurrentTime = (props: Props) => {
   );
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentTime(
-        formatDate(new Date(), "time") + " " + formatDate(new Date(), "date")
-      );
+      setCurrentTime(formatDate(new Date(), "time"));
     }, 1000);
     return () => clearInterval(interval);
   });
