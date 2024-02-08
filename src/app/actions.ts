@@ -2,6 +2,7 @@
 
 import PocketBase from "pocketbase";
 import { revalidatePath } from "next/cache";
+import { chat } from "@/lib/llm";
 
 const addEntry = async (entry: EntrySubmission) => {
   const pb = new PocketBase(process.env.NEXT_PUBLIC_PB_URL!);
@@ -33,4 +34,22 @@ const addEntry = async (entry: EntrySubmission) => {
   }
 };
 
-export { addEntry };
+const llmChat = async (data: Entry[], query: string) => {
+  const q = query || "who are the rebels?";
+
+  const response = await chat(data, q);
+
+  if (response) {
+    return response;
+  }
+
+  // if (response) {
+  //   return {
+  //     message: response.message,
+  //     done: response.done,
+  //     duration: response.duration,
+  //   };
+  // }
+};
+
+export { addEntry, llmChat };

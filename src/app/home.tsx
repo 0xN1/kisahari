@@ -3,7 +3,10 @@
 import CurrentTime from "@/components/current-time";
 import { cn, formatDate } from "@/lib/utils";
 import EntryDialog from "@/components/entry-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { chat, chatStream } from "@/lib/llm";
+import { llmChat } from "./actions";
+import { RotateCcwIcon, Send, SparkleIcon, SparklesIcon } from "lucide-react";
 
 const data = {
   title: "KISAHARI",
@@ -27,7 +30,30 @@ const calcDayProgress = () => {
   return (day / daysInYear) * 100;
 };
 
-export default async function HomePage({ entries }: { entries: Entry[] }) {
+export default function HomePage({ entries }: { entries: Entry[] }) {
+  const [loading, setLoading] = useState(false);
+  const [answer, setAnswer] = useState("");
+
+  const ask = async (formData: FormData) => {
+    const q = formData.get("q") as string;
+    setLoading(true);
+    const chat = await llmChat(entries, q);
+    setAnswer(chat?.message.content);
+    setLoading(false);
+  };
+  // const askStream = async (formData: FormData) => {
+  //   const q = formData.get("q") as string;
+  //   setLoading(true);
+  //   const chat = await chatStream(entries, q);
+  //   let answer = [];
+  //   answer.push(chat?.delta);
+  //   setAnswer(answer.join("\n"));
+  //   setLoading(false);
+
+  //   setAnswer(chat?.message);
+  //   setLoading(false);
+  // };
+
   return (
     <Container>
       <Header />
@@ -60,6 +86,48 @@ export default async function HomePage({ entries }: { entries: Entry[] }) {
           {calcDayProgress().toFixed(1)}%
         </span>
       </div>
+      <div className="absolute inset-0 flex flex-col items-end justify-start top-16 p-16 pointer-events-none">
+        <div className=" px-4 py-2 rounded-md flex flex-col justify-evenly items-center w-full max-w-md pointer-events-auto">
+          <form className="w-full p-4" action={ask}>
+            <div className="flex flex-row w-full gap-4 justify-between">
+              <input
+                type="text"
+                name="q"
+                autoComplete="off"
+                placeholder="Ask me anything"
+                className="max-w-prose w-full text-xs bg-transparent focus:outline-none break-words ring-zinc-400 ring-1 px-3 py-2 rounded-lg"
+              />
+              <button
+                onClick={() => {
+                  setAnswer("");
+                }}
+                type="reset"
+              >
+                <RotateCcwIcon className="w-5 h-5 text-zinc-600 hover:text-zinc-300" />
+              </button>
+              <button
+                onClick={() => {
+                  setLoading(true);
+                  setAnswer("");
+                }}
+                type="submit"
+              >
+                <SparklesIcon className="w-5 h-5 text-zinc-300 hover:text-lime-500" />
+              </button>
+            </div>
+          </form>
+          {answer.length > 1 && (
+            <div className="whitespace-pre-line max-w-prose max-h-[50vh] overflow-y-scroll scrollbar-thin scrollbar-thumb-lime-500 scrollbar-track-transparent text-sm text-zinc-300 p-4">
+              {answer}
+            </div>
+          )}
+          {loading && (
+            <div className="max-w-prose text-sm text-zinc-300 p-4">
+              <div className="animate-pulse uppercase">Loading...</div>
+            </div>
+          )}
+        </div>
+      </div>
 
       <Footer />
     </Container>
@@ -70,7 +138,7 @@ export const Spacer = () => <div className="spacer my-1"></div>;
 
 const Container = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="flex flex-col min-h-screen items-center justify-between w-full h-full p-8 bg-zinc-100/15 dark:bg-zinc-900/10 font-extralight z-10">
+    <main className="flex relative flex-col min-h-screen items-center justify-between w-full h-full p-8 bg-zinc-100/15 dark:bg-zinc-900/10 font-extralight z-10 max-h-screen">
       {children}
     </main>
   );
@@ -80,7 +148,7 @@ const EntriesContainer = ({ children }: { children: React.ReactNode }) => {
   return (
     <div
       className="flex-1 relative h-full flex flex-col gap-4 p-8 sm:p-16 items-start w-full ring-1 ring-zinc-700
-      overflow-y-auto max-h-[82vh] rounded-sm scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-zinc-900"
+      overflow-y-auto max-h-[82vh] rounded-sm scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent"
     >
       {children}
     </div>
