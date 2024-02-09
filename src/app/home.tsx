@@ -4,17 +4,9 @@ import CurrentTime from "@/components/current-time";
 import { cn, formatDate } from "@/lib/utils";
 import EntryDialog from "@/components/entry-dialog";
 import { useCallback, useEffect, useState } from "react";
-import { chat, chatStream, getAllModels } from "@/lib/llm";
+import { chatStream, getAllModels } from "@/lib/llm";
 import { llmChat } from "./actions";
-import {
-  Atom,
-  Loader2Icon,
-  PlayIcon,
-  RotateCcwIcon,
-  Send,
-  SparkleIcon,
-  SparklesIcon,
-} from "lucide-react";
+import { Atom, Loader2Icon, RotateCcwIcon, SparklesIcon } from "lucide-react";
 import { ChatResponse, ListResponse, ModelResponse } from "ollama";
 
 import {
@@ -35,8 +27,6 @@ const data = {
 };
 
 const calcDayProgress = () => {
-  // calculate current day relative to the start of the year
-  // turn that into a 0-100% value
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 0);
   const diff = now.getTime() - start.getTime();
@@ -84,7 +74,6 @@ export default function HomePage({ entries }: { entries: Entry[] }) {
         ];
 
         answer.push(chat.message.content);
-        // const ans = answer.join("").replace(",", "");
         const ans = answer.join("");
 
         setAnswer(ans);
@@ -94,14 +83,13 @@ export default function HomePage({ entries }: { entries: Entry[] }) {
 
       setLoading(false);
     },
-    [model]
+    [model, entries]
   );
 
   useEffect(() => {
     const getModels = async () => {
       const models = await getAllModels();
       setModels(models);
-      // console.log(models);
     };
     getModels();
   }, []);
@@ -121,7 +109,6 @@ export default function HomePage({ entries }: { entries: Entry[] }) {
   return (
     <Container>
       <Header models={models!} setModel={setModel} />
-      {/* <div className="flex flex-row justify-between w-full max-w-[95w] items-center py-1 px-4 bg-zinc-800 rounded-full"></div> */}
       <EntriesContainer>
         {entries.map((entry) => (
           <Entry
@@ -138,7 +125,6 @@ export default function HomePage({ entries }: { entries: Entry[] }) {
           className={cn(
             "flex flex-row self-start max-w-[95vw] py-2 px-4  bg-lime-400 rounded-[2px]  text-zinc-800",
             `w-[${calcDayProgress()}vw]`
-            // `w-[92vw]`
           )}
         ></div>
         <span
@@ -163,7 +149,7 @@ export default function HomePage({ entries }: { entries: Entry[] }) {
           }}
         />
       )}
-      {/* {!showAI && ( */}
+
       <div
         onClick={() => {
           setShowAI(!showAI);
@@ -269,14 +255,13 @@ const Header = ({
         <span className="self-end text-sm">{data.version}</span>
       </div>
       <div className="flex flex-row items-center gap-4">
-        {/* {JSON.stringify(models?.models.map((m) => m.name))} */}
         <Select
           onValueChange={(value) => {
             setModel(value);
           }}
         >
           <SelectTrigger className="min-w-fit text-xs uppercase bg-transparent">
-            <SelectValue className="" placeholder="Models" />
+            <SelectValue placeholder="Models" />
           </SelectTrigger>
           <SelectContent className="text-sm">
             {models?.models.map((m) => (
