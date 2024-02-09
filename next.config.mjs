@@ -6,6 +6,7 @@ const nextConfig = {
       sharp$: false,
       "onnxruntime-node$": false,
       mongodb$: false,
+      fs: false,
     };
 
     return config;
