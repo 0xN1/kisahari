@@ -3,10 +3,27 @@
 import CurrentTime from "@/components/current-time";
 import { cn, formatDate } from "@/lib/utils";
 import EntryDialog from "@/components/entry-dialog";
-import { useEffect, useState } from "react";
-import { chat, chatStream } from "@/lib/llm";
+import { useCallback, useEffect, useState } from "react";
+import { chat, chatStream, getAllModels } from "@/lib/llm";
 import { llmChat } from "./actions";
-import { RotateCcwIcon, Send, SparkleIcon, SparklesIcon } from "lucide-react";
+import {
+  Atom,
+  Loader2Icon,
+  PlayIcon,
+  RotateCcwIcon,
+  Send,
+  SparkleIcon,
+  SparklesIcon,
+} from "lucide-react";
+import { ChatResponse, ListResponse, ModelResponse } from "ollama";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const data = {
   title: "KISAHARI",
@@ -33,30 +50,77 @@ const calcDayProgress = () => {
 export default function HomePage({ entries }: { entries: Entry[] }) {
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState("");
+  const [time, setTime] = useState("");
+  const [showAI, setShowAI] = useState(true);
+  const [models, setModels] = useState<ListResponse>();
+  const [model, setModel] = useState<string>("nous-hermes2:latest");
 
   const ask = async (formData: FormData) => {
     const q = formData.get("q") as string;
     setLoading(true);
     const chat = await llmChat(entries, q);
-    setAnswer(chat?.message.content);
+    setAnswer(chat?.message.content || "");
     setLoading(false);
   };
-  // const askStream = async (formData: FormData) => {
-  //   const q = formData.get("q") as string;
-  //   setLoading(true);
-  //   const chat = await chatStream(entries, q);
-  //   let answer = [];
-  //   answer.push(chat?.delta);
-  //   setAnswer(answer.join("\n"));
-  //   setLoading(false);
 
-  //   setAnswer(chat?.message);
-  //   setLoading(false);
-  // };
+  const askStream = useCallback(
+    async (formData: FormData) => {
+      const q = formData.get("q") as string;
+      setLoading(true);
+
+      const streams = (await chatStream(entries, q, model)) as AsyncGenerator<
+        ChatResponse,
+        void,
+        unknown
+      >;
+      let answer = [];
+      let chatTime = [""];
+      for await (const chat of streams) {
+        chatTime = [
+          `LOAD:${(chat.load_duration / 1000000000).toFixed(1)}s`,
+          `TOTAL:${(chat.total_duration / 1000000000).toFixed(1)}s`,
+          `EVAL:${(chat.eval_duration / 1000000000).toFixed(1)}s`,
+          `PROMPT:${(chat.prompt_eval_duration / 1000000000).toFixed(1)}s`,
+        ];
+
+        answer.push(chat.message.content);
+        // const ans = answer.join("").replace(",", "");
+        const ans = answer.join("");
+
+        setAnswer(ans);
+      }
+
+      setTime(chatTime.join(" "));
+
+      setLoading(false);
+    },
+    [model]
+  );
+
+  useEffect(() => {
+    const getModels = async () => {
+      const models = await getAllModels();
+      setModels(models);
+      // console.log(models);
+    };
+    getModels();
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey && e.key === "k") {
+        setShowAI(!showAI);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showAI]);
 
   return (
     <Container>
-      <Header />
+      <Header models={models!} setModel={setModel} />
       {/* <div className="flex flex-row justify-between w-full max-w-[95w] items-center py-1 px-4 bg-zinc-800 rounded-full"></div> */}
       <EntriesContainer>
         {entries.map((entry) => (
@@ -86,48 +150,37 @@ export default function HomePage({ entries }: { entries: Entry[] }) {
           {calcDayProgress().toFixed(1)}%
         </span>
       </div>
-      <div className="absolute inset-0 flex flex-col items-end justify-start top-16 p-16 pointer-events-none">
-        <div className=" px-4 py-2 rounded-md flex flex-col justify-evenly items-center w-full max-w-md pointer-events-auto">
-          <form className="w-full p-4" action={ask}>
-            <div className="flex flex-row w-full gap-4 justify-between">
-              <input
-                type="text"
-                name="q"
-                autoComplete="off"
-                placeholder="Ask me anything"
-                className="max-w-prose w-full text-xs bg-transparent focus:outline-none break-words ring-zinc-400 ring-1 px-3 py-2 rounded-lg"
-              />
-              <button
-                onClick={() => {
-                  setAnswer("");
-                }}
-                type="reset"
-              >
-                <RotateCcwIcon className="w-5 h-5 text-zinc-600 hover:text-zinc-300" />
-              </button>
-              <button
-                onClick={() => {
-                  setLoading(true);
-                  setAnswer("");
-                }}
-                type="submit"
-              >
-                <SparklesIcon className="w-5 h-5 text-zinc-300 hover:text-lime-500" />
-              </button>
-            </div>
-          </form>
-          {answer.length > 1 && (
-            <div className="whitespace-pre-line max-w-prose max-h-[50vh] overflow-y-scroll scrollbar-thin scrollbar-thumb-lime-500 scrollbar-track-transparent text-sm text-zinc-300 p-4">
-              {answer}
-            </div>
+      {showAI && (
+        <AIChat
+          {...{
+            answer,
+            time,
+            loading,
+            askStream,
+            setAnswer,
+            setTime,
+            setLoading,
+          }}
+        />
+      )}
+      {/* {!showAI && ( */}
+      <div
+        onClick={() => {
+          setShowAI(!showAI);
+        }}
+        className={cn(
+          "absolute right-8 top-[15vh] bg-zinc-800 group transition-colors ease-in-out duration-200 hover:bg-lime-500 px-2 py-2 rounded-l-md",
+          showAI && "bg-lime-500 hover:bg-zinc-800 "
+        )}
+      >
+        <Atom
+          className={cn(
+            "w-4 h-4 text-zinc-800 hover:text-lime-500 transition-colors ease-in-out duration-200 group-hover:text-lime-500",
+            !showAI && "text-lime-500 group-hover:text-zinc-800"
           )}
-          {loading && (
-            <div className="max-w-prose text-sm text-zinc-300 p-4">
-              <div className="animate-pulse uppercase">Loading...</div>
-            </div>
-          )}
-        </div>
+        />
       </div>
+      {/* )} */}
 
       <Footer />
     </Container>
@@ -202,15 +255,45 @@ const Entry = ({
   );
 };
 
-const Header = () => {
+const Header = ({
+  models,
+  setModel,
+}: {
+  models: ListResponse;
+  setModel: (model: string) => void;
+}) => {
   return (
     <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-6 py-2 rounded-t-xl rounded-b-sm">
       <div className="flex-1 flex flex-row gap-2">
         <h1 className="text-xl font-normal">[{data.title}]</h1>
         <span className="self-end text-sm">{data.version}</span>
       </div>
-      <div className="uppercase py-2">
-        <CurrentTime />
+      <div className="flex flex-row items-center gap-4">
+        {/* {JSON.stringify(models?.models.map((m) => m.name))} */}
+        <Select
+          onValueChange={(value) => {
+            setModel(value);
+          }}
+        >
+          <SelectTrigger className="min-w-fit text-xs uppercase bg-transparent">
+            <SelectValue className="" placeholder="Models" />
+          </SelectTrigger>
+          <SelectContent className="text-sm">
+            {models?.models.map((m) => (
+              <SelectItem
+                className="font-mono uppercase font-thin text-xs"
+                value={m.name}
+                key={m.digest}
+              >
+                {m.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <div className="uppercase py-2">
+          <CurrentTime />
+        </div>
       </div>
     </div>
   );
@@ -222,6 +305,84 @@ const Footer = () => {
       <div className="text-xs">{data.footer.left_copy}</div>
       <EntryDialog />
       <div className="text-xs">{data.footer.right_copy}</div>
+    </div>
+  );
+};
+
+const AIChat = ({
+  answer,
+  time,
+  loading,
+  askStream,
+  setAnswer,
+  setTime,
+  setLoading,
+}: {
+  answer: string;
+  time: string;
+  loading: boolean;
+  askStream: (formData: FormData) => void;
+  setAnswer: (answer: string) => void;
+  setTime: (time: string) => void;
+  setLoading: (loading: boolean) => void;
+}) => {
+  return (
+    <div className="absolute inset-0 flex flex-col items-end justify-start top-16 p-16 pointer-events-none">
+      <div className="px-4 py-2 rounded-md flex flex-col justify-evenly items-center w-full max-w-md pointer-events-auto">
+        <form className="w-full p-4" action={askStream}>
+          <div className="flex flex-row w-full gap-4 justify-between">
+            <input
+              autoFocus
+              type="text"
+              name="q"
+              autoComplete="off"
+              placeholder="Ask me anything"
+              className="max-w-prose w-full text-xs bg-transparent focus:outline-none break-words ring-zinc-400 ring-1 px-3 py-2 rounded-lg"
+            />
+            <button
+              onClick={() => {
+                setAnswer("");
+                setTime("");
+              }}
+              type="reset"
+            >
+              <RotateCcwIcon className="w-5 h-5 text-zinc-600 hover:text-zinc-300" />
+            </button>
+            <button
+              onClick={() => {
+                setLoading(true);
+                setAnswer("");
+                setTime("");
+              }}
+              type="submit"
+            >
+              {!loading ? (
+                <SparklesIcon className="w-5 h-5 text-zinc-300 hover:text-lime-500" />
+              ) : (
+                <Loader2Icon className="w-5 h-5 text-zinc-300 hover:text-lime-500 animate-spin" />
+              )}
+            </button>
+          </div>
+        </form>
+
+        {answer.length > 1 && (
+          <div className="whitespace-pre-line self-start prose prose-zinc break-words max-w-prose max-h-[50vh] overflow-y-scroll scrollbar-thin scrollbar-thumb-lime-500 scrollbar-track-transparent text-sm text-zinc-300 p-4">
+            {answer}
+          </div>
+        )}
+        {loading && (
+          <div className="max-w-prose text-xs self-start text-zinc-500 p-4 ">
+            <div className="animate-pulse uppercase">
+              {answer.length < 1 ? "thinking" : "streaming answers"}
+            </div>
+          </div>
+        )}
+        {time && (
+          <div className="max-w-prose self-start text-xs text-zinc-500 p-4">
+            <div className="">{time}</div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
