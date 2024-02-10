@@ -28,9 +28,6 @@ export const chat = async (data: Entry[], query: string) => {
 
   const cleanerData = compressString(flattenedData.join("|"));
 
-  // console.log("Cleaner Data", cleanerData);
-  // console.log("Clean Data", JSON.stringify(cleanerData));
-
   const response = await ollama.chat({
     model: "nous-hermes2",
     messages: [
@@ -66,10 +63,7 @@ export const chatStream = async (
   model?: string
 ) => {
   const q = query || "who are you?";
-  const selectedModel = model || "nous-hermes2";
-
-  // const models = await ollama.list();
-  console.log(model);
+  const selectedModel = model || "nous-hermes2:latest";
 
   const cleanData = data.map((e) => {
     return {

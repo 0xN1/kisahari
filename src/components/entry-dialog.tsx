@@ -1,7 +1,7 @@
 "use client";
 
 import { addEntry } from "@/app/actions";
-import { Spacer } from "@/app/home";
+import { Spacer } from "@/components/home/spacer";
 import {
   Dialog,
   DialogContent,
