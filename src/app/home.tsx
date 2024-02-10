@@ -13,6 +13,7 @@ import Entry from "@/components/home/entry";
 import Header from "@/components/home/header";
 import AIButton from "@/components/home/ai-button";
 import DayProgress from "@/components/home/day-progress";
+import { useReadLocalStorage } from "usehooks-ts";
 
 const data = {
   title: "KISAHARI",
@@ -31,8 +32,17 @@ export default function HomePage({ entries }: { entries: Entry[] }) {
   const [models, setModels] = useState<ListResponse>();
   const [model, setModel] = useState<string>("nous-hermes2:latest");
 
+  const selectedModelType = useReadLocalStorage<"ollama" | "openAI">(
+    "modelType"
+  );
+
   const askStream = useCallback(
     async (formData: FormData) => {
+      if (selectedModelType === "openAI") {
+        setLoading(false);
+        setAnswer("OpenAI not supported yet.");
+        return null;
+      }
       const q = formData.get("q") as string;
       setLoading(true);
 
@@ -61,7 +71,7 @@ export default function HomePage({ entries }: { entries: Entry[] }) {
 
       setLoading(false);
     },
-    [model, entries]
+    [model, entries, selectedModelType]
   );
 
   useEffect(() => {
@@ -86,7 +96,7 @@ export default function HomePage({ entries }: { entries: Entry[] }) {
 
   return (
     <Container>
-      <Header data={data} models={models!} setModel={setModel} />
+      <Header models={models!} {...{ model, data, setModel }} />
 
       <EntriesContainer>
         {entries.map((entry) => (
