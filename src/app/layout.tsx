@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import { Sometype_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/toaster";
-import Navbar from "@/components/navbar";
-import Sidebar from "@/components/sidebar";
 import localFont from "next/font/local";
 import { ReactNode } from "react";
 
@@ -34,16 +30,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="flex flex-col font-mono w-full h-screen selection:bg-lime-500 selection:text-zinc-800">
-            {/* <Sidebar /> */}
-
             <main className="">
-              {/* <Navbar /> */}
               <Background />
               {children}
             </main>
           </div>
-
-          <Toaster />
         </ThemeProvider>
       </body>
     </html>

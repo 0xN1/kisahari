@@ -1,4 +1,4 @@
-import EntryDialog from "../entry-dialog";
+import EntryDialog from "@/components/home/entry-dialog";
 
 const Footer = (data: {
   footer: {
