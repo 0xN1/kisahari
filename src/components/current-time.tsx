@@ -7,7 +7,7 @@ type Props = {};
 
 const CurrentTime = (props: Props) => {
   const [currentTime, setCurrentTime] = useState<string>(
-    formatDate(new Date())
+    formatDate(new Date(), "time")
   );
   useEffect(() => {
     const interval = setInterval(() => {
