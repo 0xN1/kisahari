@@ -9,7 +9,7 @@ const AIButton = ({
   setShowAI: (showAI: boolean) => void;
 }) => {
   return (
-    <div
+    <button
       onClick={() => {
         setShowAI(!showAI);
       }}
@@ -22,10 +22,10 @@ const AIButton = ({
         className={cn(
           "w-4 h-4 text-zinc-800 hover:text-lime-500 transition-colors ease-in-out duration-200 group-hover:text-lime-500",
           !showAI &&
-            "text-lime-500 group-hover:text-zinc-800 animate-pulse duration-[4000] ease-linear"
+            "text-lime-500 group-hover:text-zinc-800 animate-pulse duration-1000 ease-linear"
         )}
       />
-    </div>
+    </button>
   );
 };
 

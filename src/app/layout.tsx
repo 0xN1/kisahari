@@ -12,7 +12,7 @@ const commitMono = localFont({
 
 export const metadata: Metadata = {
   title: "Kisahari",
-  description: "Kisah hari hari",
+  description: "A personal journaling app.",
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
       <body className={`${commitMono.variable}`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
