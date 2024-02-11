@@ -9,23 +9,25 @@ const AIButton = ({
   setShowAI: (showAI: boolean) => void;
 }) => {
   return (
-    <button
-      onClick={() => {
-        setShowAI(!showAI);
-      }}
-      className={cn(
-        "absolute right-8 top-[15vh] bg-zinc-800 group transition-colors ease-in-out duration-200 hover:bg-lime-500 px-2 py-2 rounded-l-md",
-        showAI && "bg-lime-500 hover:bg-zinc-800"
-      )}
-    >
-      <Atom
+    <div className="absolute right-8 top-[14vh]">
+      <button
+        onClick={() => {
+          setShowAI(!showAI);
+        }}
         className={cn(
-          "w-4 h-4 text-zinc-800 hover:text-lime-500 transition-colors ease-in-out duration-200 group-hover:text-lime-500",
-          !showAI &&
-            "text-lime-500 group-hover:text-zinc-800 animate-pulse duration-1000 ease-linear"
+          "bg-zinc-800 group transition-colors ease-in-out duration-200 hover:bg-lime-500 px-2 py-2 rounded-l-md",
+          showAI && "bg-lime-500 hover:bg-zinc-800"
         )}
-      />
-    </button>
+      >
+        <Atom
+          className={cn(
+            "w-4 h-4 text-zinc-800 hover:text-lime-500 transition-colors ease-in-out duration-200 group-hover:text-lime-500",
+            !showAI &&
+              "text-lime-500 group-hover:text-zinc-800 animate-pulse duration-1000 ease-linear"
+          )}
+        />
+      </button>
+    </div>
   );
 };
 

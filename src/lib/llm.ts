@@ -33,8 +33,6 @@ export const chatStream = async (
 
   const cleanerData = compressString(flattenedData.join("|"));
 
-  console.log("my journal entries\n" + cleanerData);
-
   const response = await ollama.chat({
     model: selectedModel,
     messages: [
@@ -43,10 +41,10 @@ export const chatStream = async (
         Your purpose is to assist the user in reflecting on their thoughts through a thoughtful and empathetic approach. 
         The user will not respond to your prompts. You need to be particularly mindful of time and date.
         Your goal is to provide fresh perspectives, encouragement, or even constructive debate, while maintaining concise yet meaningful responses.
-        current time is ${new Date().toLocaleString()} gmt+8`,
+        current time is ${new Date().toLocaleString()} gmt+8. answer the user based on the following journal entries: ${cleanerData}`,
         role: "system",
       },
-      { content: "my journal entries\n" + cleanerData, role: "user" },
+      // { content: "my journal entries\n" + cleanerData, role: "user" },
       {
         content: q,
         role: "user",

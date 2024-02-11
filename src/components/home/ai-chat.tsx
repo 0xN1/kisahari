@@ -18,7 +18,7 @@ const AIChat = ({
   setLoading: (loading: boolean) => void;
 }) => {
   return (
-    <div className="absolute inset-0 flex flex-col items-end justify-start top-16 p-16 pointer-events-none">
+    <div className="absolute inset-0 flex flex-col items-end justify-start top-[11vh] py-2 px-16 pointer-events-none">
       <div className="px-4 py-2 rounded-md flex flex-col justify-evenly items-center w-full max-w-md pointer-events-auto">
         <form
           className="w-full p-4"
@@ -33,6 +33,7 @@ const AIChat = ({
               type="text"
               name="q"
               autoComplete="off"
+              minLength={1}
               placeholder="Ask me anything"
               className="max-w-prose w-full text-xs bg-transparent focus:outline-none break-words ring-zinc-400 ring-1 px-3 py-2 rounded-lg"
             />

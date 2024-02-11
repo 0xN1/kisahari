@@ -14,6 +14,7 @@ import Header from "@/components/home/header";
 import AIButton from "@/components/home/ai-button";
 import DayProgress from "@/components/home/day-progress";
 import { useReadLocalStorage } from "usehooks-ts";
+import { askAI } from "@/lib/langchain";
 
 const data = {
   title: "KISAHARI",
@@ -74,6 +75,38 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
     [model, entries, selectedModelType]
   );
 
+  const askLLM = useCallback(
+    async (formData: FormData) => {
+      if (selectedModelType === "openAI") {
+        setLoading(false);
+        setAnswer("OpenAI not supported yet.");
+        return null;
+      }
+
+      performance.mark("start");
+      const q = formData.get("q") as string;
+      setLoading(true);
+      const stream = await askAI(entries, model, q);
+      let answer = [];
+      for await (const chat of stream) {
+        answer.push(chat.answer);
+        const ans = answer.join("");
+
+        setAnswer(ans);
+      }
+      performance.mark("end");
+      setLoading(false);
+      performance.measure("askAI", "start", "end");
+      setTime(
+        // return in seconds
+        `TIME:${(
+          performance.getEntriesByName("askAI")[0].duration / 1000
+        ).toFixed(1)}s`
+      );
+    },
+    [entries, model, selectedModelType]
+  );
+
   useEffect(() => {
     const getModels = async () => {
       const models = await getAllModels();
@@ -118,7 +151,8 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
             answer,
             time,
             loading,
-            askStream,
+            // askStream,
+            askStream: askLLM,
             setAnswer,
             setTime,
             setLoading,

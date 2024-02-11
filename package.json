@@ -1,6 +1,6 @@
 {
   "name": "kisahari",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@langchain/community": "^0.0.27",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
@@ -20,6 +21,7 @@
     "clsx": "^2.1.0",
     "dexie": "^3.2.5",
     "dexie-react-hooks": "^1.1.7",
+    "langchain": "^0.1.17",
     "lucide-react": "^0.323.0",
     "next": "14.1.0",
     "next-themes": "^0.2.1",
