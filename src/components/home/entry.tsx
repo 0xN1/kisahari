@@ -41,11 +41,9 @@ const Entry = ({
             text-zinc-300 whitespace-pre-line"
         >
           <Spacer />
-          <h1 className="uppercase text-xl -ml-1 font-light">{title}</h1>
+          <h1 className="uppercase text-xl font-light">{title}</h1>
           {tldr && (
-            <h1 className="text-xs -ml-1 font-light text-zinc-500 -my-2">
-              {tldr}
-            </h1>
+            <h1 className="text-xs font-light text-zinc-500 -my-2">{tldr}</h1>
           )}
           <div
             dangerouslySetInnerHTML={{ __html: content }}
