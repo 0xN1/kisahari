@@ -1,16 +1,8 @@
-type Entry = {
-  collectionID: string;
-  collectionName: string;
+type JournalEntry = {
   content: string;
-  created: Date;
-  id: string;
+  created: string;
+  id: number;
   title: string;
   tldr: string;
-  updated: Date;
-};
-
-type EntrySubmission = {
-  title: string;
-  tldr?: string;
-  content: string;
+  updated: string;
 };
