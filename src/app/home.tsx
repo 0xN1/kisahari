@@ -17,18 +17,18 @@ import { useReadLocalStorage } from "usehooks-ts";
 
 const data = {
   title: "KISAHARI",
-  version: "v010",
+  version: "v011",
   footer: {
-    left_copy: "A JOURNAL BY N1",
+    left_copy: "YOUR PERSONAL JOURNAL",
     right_copy: "KISAHARI © 2024",
   },
 };
 
-export default function HomePage({ entries }: { entries: Entry[] }) {
+export default function HomePage({ entries }: { entries: JournalEntry[] }) {
   const [loading, setLoading] = useState(false);
   const [answer, setAnswer] = useState("");
   const [time, setTime] = useState("");
-  const [showAI, setShowAI] = useState(true);
+  const [showAI, setShowAI] = useState(false);
   const [models, setModels] = useState<ListResponse>();
   const [model, setModel] = useState<string>("nous-hermes2:latest");
 
@@ -102,9 +102,10 @@ export default function HomePage({ entries }: { entries: Entry[] }) {
         {entries.map((entry) => (
           <Entry
             key={entry.id}
-            date={formatDate(entry.created)}
+            date={formatDate(new Date(entry.created))}
             title={entry.title}
             content={entry.content}
+            tldr={entry.tldr}
           />
         ))}
       </EntriesContainer>

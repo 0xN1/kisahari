@@ -20,7 +20,13 @@ const AIChat = ({
   return (
     <div className="absolute inset-0 flex flex-col items-end justify-start top-16 p-16 pointer-events-none">
       <div className="px-4 py-2 rounded-md flex flex-col justify-evenly items-center w-full max-w-md pointer-events-auto">
-        <form className="w-full p-4" action={askStream}>
+        <form
+          className="w-full p-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            askStream(new FormData(e.target as HTMLFormElement));
+          }}
+        >
           <div className="flex flex-row w-full gap-4 justify-between">
             <input
               autoFocus

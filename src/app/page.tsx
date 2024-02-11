@@ -1,14 +1,22 @@
-import { notFound } from "next/navigation";
+"use client";
+
 import HomePage from "@/app/home";
+import { useLiveQuery } from "dexie-react-hooks";
+import { entries } from "@/lib/index-db";
 
-export default async function Home() {
-  const res = await fetch(process.env.NEXT_PUBLIC_ENTRIES_URL!, {
-    next: { revalidate: 60 },
-  });
-  if (!res.ok) return notFound();
+export default function Home() {
+  const allEntries = useLiveQuery(
+    () => entries.toArray(),
+    [entries]
+  ) as JournalEntry[];
 
-  const { items: entries }: { items: Entry[] } = await res.json();
-  if (!entries) return notFound();
+  const sortedEntries = allEntries?.sort(
+    (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime()
+  );
 
-  return <HomePage entries={entries.reverse()} />;
+  if (allEntries) {
+    return <HomePage entries={sortedEntries} />;
+  } else {
+    return <HomePage entries={[]} />;
+  }
 }

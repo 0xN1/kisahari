@@ -23,6 +23,7 @@ const nextConfig = {
       "/*": ["./cache/**/*"],
     },
   },
+  output: "export",
 };
 
 export default nextConfig;

@@ -1,6 +1,6 @@
 import ollama from "ollama";
 
-export const chat = async (data: Entry[], query: string) => {
+export const chat = async (data: JournalEntry[], query: string) => {
   const q = query || "who are you?";
 
   const cleanData = data.map((e) => {
@@ -58,7 +58,7 @@ export const chat = async (data: Entry[], query: string) => {
 };
 
 export const chatStream = async (
-  data: Entry[],
+  data: JournalEntry[],
   query: string,
   model?: string
 ) => {

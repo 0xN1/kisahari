@@ -1,6 +1,5 @@
 "use client";
 
-import { addEntry } from "@/app/actions";
 import { Spacer } from "@/components/home/spacer";
 import {
   Dialog,
@@ -10,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { entries } from "@/lib/index-db";
 import { RotateCcw } from "lucide-react";
 import { useState } from "react";
 
@@ -25,6 +25,8 @@ const EntryDialog = () => {
       title,
       content,
       tldr,
+      created: new Date().toISOString(),
+      updated: new Date().toISOString(),
     };
 
     if (title.length < 1 || content.length < 1 || content.length < 1) {
@@ -32,13 +34,12 @@ const EntryDialog = () => {
       return;
     }
 
-    const res = await addEntry(entry);
+    const res = await entries.add(entry);
 
-    if (res.message) {
-      // alert(res.message);
-    } else {
-      // alert("Entry added successfully");
+    if (res) {
       setOpen(false);
+    } else {
+      alert("Entry not added");
     }
   };
 
@@ -58,7 +59,10 @@ const EntryDialog = () => {
           <Spacer />
 
           <form
-            action={handleSubmit}
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(new FormData(e.target as HTMLFormElement));
+            }}
             className="w-full h-full flex flex-col items-center justify-center gap-4 font-mono"
           >
             <div className="text-start w-full items-start h-auto max-w-prose flex justify-center flex-col gap-2">
@@ -75,10 +79,7 @@ const EntryDialog = () => {
               </h4>
             </div>
             <div className="text-start w-full items-start h-auto max-w-prose flex justify-center flex-col gap-2">
-              <h3 className="font-light text-sm font-mono uppercase">
-                TL;DR{" "}
-                {/* <span className="text-xs text-zinc-500">(optional)</span> */}
-              </h3>
+              <h3 className="font-light text-sm font-mono uppercase">TL;DR </h3>
               <textarea
                 maxLength={100}
                 rows={2}

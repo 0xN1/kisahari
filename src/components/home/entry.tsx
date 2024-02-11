@@ -8,10 +8,12 @@ const Entry = ({
   date,
   title,
   content,
+  tldr,
 }: {
   date: string;
   title: string;
   content: string;
+  tldr?: string;
 }) => {
   const [closed, setClosed] = useState(false);
 
@@ -40,6 +42,11 @@ const Entry = ({
         >
           <Spacer />
           <h1 className="uppercase text-xl -ml-1 font-light">{title}</h1>
+          {tldr && (
+            <h1 className="text-xs -ml-1 font-light text-zinc-500 -my-2">
+              {tldr}
+            </h1>
+          )}
           <div
             dangerouslySetInnerHTML={{ __html: content }}
             className="whitespace-pre-line max-w-prose text-sm text-zinc-300"
