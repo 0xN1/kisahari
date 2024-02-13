@@ -23,6 +23,7 @@ const Header = ({
   model,
   openAIKey,
   setOpenAIKey,
+  isLoading,
 }: {
   data: { title: string; version: string };
   models: ListResponse;
@@ -32,22 +33,9 @@ const Header = ({
   model: string;
   openAIKey: string;
   setOpenAIKey: (key: string) => void;
+  isLoading: boolean;
 }) => {
   const [showKey, setShowKey] = useState(false);
-
-  if (!models || model === "") {
-    return (
-      <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-6 py-2 rounded-t-xl rounded-b-sm">
-        <div className="flex-1 flex flex-row gap-2 items-center">
-          <img src="/icon.svg" alt="icon" className="h-6 w-6" />
-          <h1 className="text-xl font-normal">[{data.title}]</h1>
-          <span className="text-sm">{data.version}</span>
-        </div>
-
-        <div className="uppercase py-2 animate-pulse">LOADING...</div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-6 py-2 rounded-t-xl rounded-b-sm">
@@ -57,28 +45,35 @@ const Header = ({
         <span className="text-sm">{data.version}</span>
       </div>
 
-      <div className="flex flex-row items-center gap-4 max-w-fit w-full self-end">
-        {modelType === "ollama" ? (
-          <LocalModelSelector
-            models={models}
-            setModel={setModel}
-            model={model}
-          />
-        ) : (
-          <APIKeyInput
-            openAIKey={openAIKey}
-            setOpenAIKey={setOpenAIKey}
-            showKey={showKey}
-            setShowKey={setShowKey}
-          />
-        )}
+      {isLoading ? (
+        <div className="uppercase py-2 animate-pulse">LOADING...</div>
+      ) : (
+        <div className="flex flex-row items-center gap-4 max-w-fit w-full self-end">
+          {modelType === "ollama" ? (
+            <LocalModelSelector
+              models={models}
+              setModel={setModel}
+              model={model}
+            />
+          ) : (
+            <APIKeyInput
+              openAIKey={openAIKey}
+              setOpenAIKey={setOpenAIKey}
+              showKey={showKey}
+              setShowKey={setShowKey}
+            />
+          )}
 
-        <ModelTypeSelector modelType={modelType} setModelType={setModelType} />
+          <ModelTypeSelector
+            modelType={modelType}
+            setModelType={setModelType}
+          />
 
-        <div className="uppercase py-2">
-          <CurrentTime />
+          <div className="uppercase py-2">
+            <CurrentTime />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

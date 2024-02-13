@@ -34,6 +34,7 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
   const [model, setModel] = useState<string>("nous-hermes2:latest");
   const [modelType, setModelType] = useLocalStorage("modelType", "ollama");
   const [openAIKey, setOpenAIKey] = useLocalStorage("openAIKey", null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // const openAIKey = useReadLocalStorage<string>("openAIKey");
 
@@ -83,6 +84,7 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
     const getModels = async () => {
       const models = await getAllModels();
       setModels(models);
+      setIsLoading(false);
     };
     getModels();
   }, []);
@@ -111,6 +113,7 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
           modelType,
           openAIKey,
           setOpenAIKey,
+          isLoading,
         }}
       />
 
