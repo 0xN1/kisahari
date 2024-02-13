@@ -1,9 +1,9 @@
 "use client";
 
-import { cn, formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
-import { chatStream, getAllModels } from "@/lib/llm";
-import type { ChatResponse, ListResponse } from "ollama";
+import { getAllModels } from "@/lib/llm";
+import type { ListResponse } from "ollama";
 
 import AIChat from "@/components/home/ai-chat";
 import Footer from "@/components/home/footer";
@@ -13,8 +13,8 @@ import Entry from "@/components/home/entry";
 import Header from "@/components/home/header";
 import AIButton from "@/components/home/ai-button";
 import DayProgress from "@/components/home/day-progress";
-import { useReadLocalStorage } from "usehooks-ts";
-import { askAI } from "@/lib/langchain";
+import { askAI, askOpenAI } from "@/lib/langchain";
+import useLocalStorage from "@/hooks/use-local-storage";
 
 const data = {
   title: "KISAHARI",
@@ -32,79 +32,51 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
   const [showAI, setShowAI] = useState(false);
   const [models, setModels] = useState<ListResponse>();
   const [model, setModel] = useState<string>("nous-hermes2:latest");
+  const [modelType, setModelType] = useLocalStorage("modelType", "ollama");
+  const [openAIKey, setOpenAIKey] = useLocalStorage("openAIKey", null);
 
-  const selectedModelType = useReadLocalStorage<"ollama" | "openAI">(
-    "modelType"
-  );
-
-  const askStream = useCallback(
-    async (formData: FormData) => {
-      if (selectedModelType === "openAI") {
-        setLoading(false);
-        setAnswer("OpenAI not supported yet.");
-        return null;
-      }
-      const q = formData.get("q") as string;
-      setLoading(true);
-
-      const streams = (await chatStream(entries, q, model)) as AsyncGenerator<
-        ChatResponse,
-        void,
-        unknown
-      >;
-      let answer = [];
-      let chatTime = [""];
-      for await (const chat of streams) {
-        chatTime = [
-          `LOAD:${(chat.load_duration / 1000000000).toFixed(1)}s`,
-          `TOTAL:${(chat.total_duration / 1000000000).toFixed(1)}s`,
-          `EVAL:${(chat.eval_duration / 1000000000).toFixed(1)}s`,
-          `PROMPT:${(chat.prompt_eval_duration / 1000000000).toFixed(1)}s`,
-        ];
-
-        answer.push(chat.message.content);
-        const ans = answer.join("");
-
-        setAnswer(ans);
-      }
-
-      setTime(chatTime.join(" "));
-
-      setLoading(false);
-    },
-    [model, entries, selectedModelType]
-  );
+  // const openAIKey = useReadLocalStorage<string>("openAIKey");
 
   const askLLM = useCallback(
     async (formData: FormData) => {
-      if (selectedModelType === "openAI") {
-        setLoading(false);
-        setAnswer("OpenAI not supported yet.");
-        return null;
-      }
-
       performance.mark("start");
       const q = formData.get("q") as string;
       setLoading(true);
-      const stream = await askAI(entries, model, q);
-      let answer = [];
-      for await (const chat of stream) {
-        answer.push(chat.answer);
-        const ans = answer.join("");
 
-        setAnswer(ans);
+      try {
+        const processStream = async (stream: any) => {
+          let answer = [];
+          for await (const chat of stream) {
+            answer.push(chat.answer);
+            const ans = answer.join("");
+
+            setAnswer(ans);
+          }
+          performance.mark("end");
+          setLoading(false);
+          performance.measure("askAI", "start", "end");
+          setTime(
+            `TIME:${(
+              performance.getEntriesByName("askAI")[0].duration / 1000
+            ).toFixed(1)}s`
+          );
+        };
+
+        if (modelType === "openAI" && openAIKey && openAIKey.length > 0) {
+          const stream = await askOpenAI(entries, q, openAIKey);
+          processStream(stream);
+        }
+
+        if (modelType === "ollama") {
+          const stream = await askAI(entries, model, q);
+          processStream(stream);
+        }
+      } catch (error) {
+        setLoading(false);
+        setAnswer("Error: " + error);
       }
-      performance.mark("end");
-      setLoading(false);
-      performance.measure("askAI", "start", "end");
-      setTime(
-        // return in seconds
-        `TIME:${(
-          performance.getEntriesByName("askAI")[0].duration / 1000
-        ).toFixed(1)}s`
-      );
     },
-    [entries, model, selectedModelType]
+    [entries, model, modelType, openAIKey]
   );
 
   useEffect(() => {
@@ -129,7 +101,18 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
 
   return (
     <Container>
-      <Header models={models!} {...{ model, data, setModel }} />
+      <Header
+        models={models!}
+        {...{
+          model,
+          data,
+          setModel,
+          setModelType,
+          modelType,
+          openAIKey,
+          setOpenAIKey,
+        }}
+      />
 
       <EntriesContainer>
         {entries.map((entry) => (
@@ -151,8 +134,7 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
             answer,
             time,
             loading,
-            // askStream,
-            askStream: askLLM,
+            askLLM,
             setAnswer,
             setTime,
             setLoading,
