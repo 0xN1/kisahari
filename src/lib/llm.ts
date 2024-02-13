@@ -58,6 +58,10 @@ export const chatStream = async (
 };
 
 export const getAllModels = async () => {
-  const models = await ollama.list();
-  return models;
+  try {
+    const models = await ollama.list();
+    return models;
+  } catch (e) {
+    console.error(e);
+  }
 };
