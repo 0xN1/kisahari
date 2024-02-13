@@ -9,9 +9,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import CurrentTime from "@/components/current-time";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { KeyIcon, LockIcon } from "lucide-react";
-import useLocalStorage from "@/hooks/use-local-storage";
 
 type ModelType = "ollama" | "openAI";
 
@@ -19,16 +18,21 @@ const Header = ({
   data,
   models,
   setModel,
+  setModelType,
+  modelType,
   model,
+  openAIKey,
+  setOpenAIKey,
 }: {
   data: { title: string; version: string };
   models: ListResponse;
   setModel: (model: string) => void;
+  setModelType: (modelType: ModelType) => void;
+  modelType: ModelType;
   model: string;
+  openAIKey: string;
+  setOpenAIKey: (key: string) => void;
 }) => {
-  const [modelType, setModelType] = useLocalStorage("modelType", "ollama");
-  const [openAIKey, setOpenAIKey] = useLocalStorage("openAIKey", null);
-
   const [showKey, setShowKey] = useState(false);
 
   if (!models || model === "") {
@@ -98,7 +102,11 @@ const APIKeyInput = ({
         onClick={() => setShowKey(!showKey)}
         className="flex h-10 items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 ring-offset-background focus:outline-none focus:ring-1 focus:ring-lime-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 text-xs"
       >
-        {showKey ? <LockIcon className="h-5 w-5" /> : <KeyIcon className="h-5 w-5" />}
+        {showKey ? (
+          <LockIcon className="h-5 w-5" />
+        ) : (
+          <KeyIcon className="h-5 w-5" />
+        )}
       </button>
 
       {showKey && (

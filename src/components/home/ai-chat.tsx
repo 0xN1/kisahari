@@ -4,7 +4,7 @@ const AIChat = ({
   answer,
   time,
   loading,
-  askStream,
+  askLLM,
   setAnswer,
   setTime,
   setLoading,
@@ -12,7 +12,7 @@ const AIChat = ({
   answer: string;
   time: string;
   loading: boolean;
-  askStream: (formData: FormData) => void;
+  askLLM: (formData: FormData) => void;
   setAnswer: (answer: string) => void;
   setTime: (time: string) => void;
   setLoading: (loading: boolean) => void;
@@ -24,7 +24,7 @@ const AIChat = ({
           className="w-full p-4"
           onSubmit={(e) => {
             e.preventDefault();
-            askStream(new FormData(e.target as HTMLFormElement));
+            askLLM(new FormData(e.target as HTMLFormElement));
           }}
         >
           <div className="flex flex-row w-full gap-4 justify-between">
