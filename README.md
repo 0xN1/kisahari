@@ -19,9 +19,9 @@ I just want a personal journal app where i keep the data locally, while having t
 
 ## Todo / Ideas
 
-- Option to use OpenAI API
-- Turn into PWA
-- Turn into Tauri app (Desktop)
+- [x] Option to use OpenAI API
+- [ ] Turn into PWA
+- [ ] Turn into Tauri app (Desktop)
 
 ## Develop
 
@@ -48,3 +48,7 @@ build the app
 ```
 bun run build
 ```
+
+## Contribute
+
+Feel free to open issue and create PR :)
