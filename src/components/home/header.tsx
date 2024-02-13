@@ -92,16 +92,16 @@ const APIKeyInput = ({
   showKey: boolean;
   setShowKey: (showKey: boolean) => void;
 }) => {
-  if (showKey && openAIKey !== "") {
-    return (
-      <>
-        <button
-          onClick={() => setShowKey(false)}
-          className="flex h-10 items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 ring-offset-background focus:outline-none focus:ring-1 focus:ring-lime-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 text-xs"
-        >
-          <LockIcon className="h-5 w-5" />
-        </button>
+  return (
+    <>
+      <button
+        onClick={() => setShowKey(!showKey)}
+        className="flex h-10 items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 ring-offset-background focus:outline-none focus:ring-1 focus:ring-lime-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 text-xs"
+      >
+        {showKey ? <LockIcon className="h-5 w-5" /> : <KeyIcon className="h-5 w-5" />}
+      </button>
 
+      {showKey && (
         <input
           type="text"
           className="flex h-10 w-full min-w-fit items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-lime-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 text-xs"
@@ -109,20 +109,9 @@ const APIKeyInput = ({
           value={openAIKey}
           onChange={(e) => setOpenAIKey(e.target.value)}
         />
-      </>
-    );
-  } else {
-    return (
-      <>
-        <button
-          onClick={() => setShowKey(true)}
-          className="flex h-10 items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 ring-offset-background focus:outline-none focus:ring-1 focus:ring-lime-500 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 text-xs"
-        >
-          <KeyIcon className="h-5 w-5" />
-        </button>
-      </>
-    );
-  }
+      )}
+    </>
+  );
 };
 
 const LocalModelSelector = ({
