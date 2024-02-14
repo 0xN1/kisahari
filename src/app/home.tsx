@@ -31,7 +31,7 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
   const [time, setTime] = useState("");
   const [showAI, setShowAI] = useState(false);
   const [models, setModels] = useState<ListResponse>();
-  const [model, setModel] = useState<string>("nous-hermes2:latest");
+  const [model, setModel] = useState<string>("");
   const [modelType, setModelType] = useLocalStorage("modelType", "ollama");
   const [openAIKey, setOpenAIKey] = useLocalStorage("openAIKey", null);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,6 +88,10 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
     };
     getModels();
   }, []);
+
+  useEffect(() => {
+    setModel(models?.models[0]?.name || "");
+}, [models]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
