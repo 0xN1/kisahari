@@ -30,8 +30,22 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
   const [answer, setAnswer] = useState("");
   const [time, setTime] = useState("");
   const [showAI, setShowAI] = useState(false);
-  const [models, setModels] = useState<ListResponse>();
-  const [model, setModel] = useState<string>("");
+  const [ollamaModels, setOllamaModels] = useState<ListResponse>();
+  const [selectedOllamaModel, setSelectedOllamaModel] = useState<string>("");
+
+  const [openAiModels] = useState({
+    models: [
+      {
+        name: "gpt-3.5-turbo",
+      },
+      {
+        name: "gpt-4",
+      },
+    ],
+  });
+
+  const [selectedOpenAiModel, setSelectedOpenAiModel] =
+    useState<string>("gpt-3.5-turbo");
   const [modelType, setModelType] = useLocalStorage("modelType", "ollama");
   const [openAIKey, setOpenAIKey] = useLocalStorage("openAIKey", null);
   const [isLoading, setIsLoading] = useState(true);
@@ -64,12 +78,17 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
         };
 
         if (modelType === "openAI" && openAIKey && openAIKey.length > 0) {
-          const stream = await askOpenAI(entries, q, openAIKey);
+          const stream = await askOpenAI(
+            entries,
+            q,
+            openAIKey,
+            selectedOpenAiModel
+          );
           processStream(stream);
         }
 
         if (modelType === "ollama") {
-          const stream = await askAI(entries, model, q);
+          const stream = await askAI(entries, selectedOllamaModel, q);
           processStream(stream);
         }
       } catch (error) {
@@ -77,21 +96,21 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
         setAnswer("Error: " + error);
       }
     },
-    [entries, model, modelType, openAIKey]
+    [entries, selectedOllamaModel, selectedOpenAiModel, modelType, openAIKey]
   );
 
   useEffect(() => {
     const getModels = async () => {
       const models = await getAllModels();
-      setModels(models);
+      setOllamaModels(models);
       setIsLoading(false);
     };
     getModels();
   }, []);
 
   useEffect(() => {
-    setModel(models?.models[0]?.name || "");
-}, [models]);
+    setSelectedOllamaModel(ollamaModels?.models[0]?.name || "");
+  }, [ollamaModels]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -108,16 +127,19 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
   return (
     <Container>
       <Header
-        models={models!}
+        models={ollamaModels!}
         {...{
-          model,
+          openAiModels,
+          selectedOllamaModel,
           data,
-          setModel,
+          setSelectedOllamaModel,
           setModelType,
           modelType,
           openAIKey,
           setOpenAIKey,
           isLoading,
+          setSelectedOpenAiModel,
+          selectedOpenAiModel,
         }}
       />
 

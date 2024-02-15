@@ -81,7 +81,8 @@ Question: {input}`);
 const askOpenAI = async (
   data: JournalEntry[],
   query: string,
-  openAIKey: string
+  openAIKey: string,
+  modelName: string = "gpt-3.5-turbo"
 ) => {
   let docs: Document<Record<string, any>>[] = [];
 
@@ -130,7 +131,7 @@ Question: {input}`);
 
   const model = new ChatOpenAI({
     openAIApiKey: openAIKey,
-    modelName: "gpt-3.5-turbo",
+    modelName,
   });
 
   const documentChain = await createStuffDocumentsChain({

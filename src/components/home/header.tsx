@@ -17,23 +17,29 @@ type ModelType = "ollama" | "openAI";
 const Header = ({
   data,
   models,
-  setModel,
   setModelType,
   modelType,
-  model,
+  selectedOllamaModel,
+  setSelectedOllamaModel,
   openAIKey,
   setOpenAIKey,
   isLoading,
+  openAiModels,
+  setSelectedOpenAiModel,
+  selectedOpenAiModel,
 }: {
   data: { title: string; version: string };
   models: ListResponse;
-  setModel: (model: string) => void;
+  setSelectedOllamaModel: (model: string) => void;
   setModelType: (modelType: ModelType) => void;
   modelType: ModelType;
-  model: string;
+  selectedOllamaModel: string;
   openAIKey: string;
   setOpenAIKey: (key: string) => void;
   isLoading: boolean;
+  openAiModels: any;
+  setSelectedOpenAiModel: (model: string) => void;
+  selectedOpenAiModel: string;
 }) => {
   const [showKey, setShowKey] = useState(false);
 
@@ -52,16 +58,24 @@ const Header = ({
           {modelType === "ollama" ? (
             <LocalModelSelector
               models={models}
-              setModel={setModel}
-              model={model}
+              setModel={setSelectedOllamaModel}
+              model={selectedOllamaModel}
             />
           ) : (
-            <APIKeyInput
-              openAIKey={openAIKey}
-              setOpenAIKey={setOpenAIKey}
-              showKey={showKey}
-              setShowKey={setShowKey}
-            />
+            <>
+              <APIKeyInput
+                openAIKey={openAIKey}
+                setOpenAIKey={setOpenAIKey}
+                showKey={showKey}
+                setShowKey={setShowKey}
+              />
+
+              <LocalModelSelector
+                models={openAiModels}
+                setModel={setSelectedOpenAiModel}
+                model={selectedOpenAiModel}
+              />
+            </>
           )}
 
           <ModelTypeSelector
