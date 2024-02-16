@@ -18,7 +18,7 @@ import useLocalStorage from "@/hooks/use-local-storage";
 
 const data = {
   title: "KISAHARI",
-  version: "v020",
+  version: "v030",
   footer: {
     left_copy: "YOUR PERSONAL JOURNAL",
     right_copy: "KISAHARI © 2024",

@@ -4,7 +4,7 @@ Kisahari, a personal journaling app where you can chat with your entries locally
 
 ## Motivation
 
-I just want a personal journal app where i keep the data locally, while having the power to chat with it using local LLM.
+A personal journal app where we keep the data locally, while having the power to chat with it using local LLM.
 
 ## Features
 
@@ -16,10 +16,16 @@ I just want a personal journal app where i keep the data locally, while having t
 - Local embedding
 - In-memory Vector DB
 - Entries stored in IndexedDB
+- Model selection for Ollama & OpenAI
 
 ## Todo / Ideas
 
 - [x] Option to use OpenAI API
+- [x] Model selection for OpenAI
+- [ ] Mobile responsive design
+- [ ] Allow ollama model pull from within the app
+- [ ] Allow theme customization
+- [ ] Support markdown
 - [ ] Turn into PWA
 - [ ] Turn into Tauri app (Desktop)
 
@@ -52,3 +58,7 @@ bun run build
 ## Contribute
 
 Feel free to open issue and create PR :)
+
+## Contributors
+
+[<img src="https://github.com/0xn1.png" width="48">](https://github.com/0xn1) [<img src="https://github.com/apikmeister.png" width="48">](https://github.com/apikmeister) [<img src="https://github.com/luqmanrom.png" width="48">](https://github.com/luqmanrom)
