@@ -61,23 +61,28 @@ export default function HomePage({ entries }: { entries: JournalEntry[] }) {
       try {
         const processStream = async (stream: any) => {
           let answer = [];
-          for await (const chat of stream) {
-            answer.push(chat.answer);
-            const ans = answer.join("");
+          try {
+            for await (const chat of stream) {
+              answer.push(chat.answer);
+              const ans = answer.join("");
 
-            setAnswer(ans);
+              setAnswer(ans);
+            }
+            performance.mark("end");
+            setLoading(false);
+            performance.measure("askAI", "start", "end");
+            setTime(
+              `TIME:${(
+                performance.getEntriesByName("askAI")[0].duration / 1000
+              ).toFixed(1)}s`
+            );
+          } catch (error) {
+            setLoading(false);
+            setAnswer("Error: " + error);
           }
-          performance.mark("end");
-          setLoading(false);
-          performance.measure("askAI", "start", "end");
-          setTime(
-            `TIME:${(
-              performance.getEntriesByName("askAI")[0].duration / 1000
-            ).toFixed(1)}s`
-          );
         };
 
-        if (modelType === "openAI" && openAIKey && openAIKey.length > 0) {
+        if (modelType === "openAI") {
           const stream = await askOpenAI(
             entries,
             q,
