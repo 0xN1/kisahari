@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import CurrentTime from "@/components/current-time";
 import { useState } from "react";
-import { KeyIcon, LockIcon } from "lucide-react";
+import { KeyIcon, LockIcon, MenuIcon, XIcon } from "lucide-react";
 
 type ModelType = "ollama" | "openAI";
 
@@ -42,51 +42,114 @@ const Header = ({
   selectedOpenAiModel: string;
 }) => {
   const [showKey, setShowKey] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   return (
-    <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-6 py-2 rounded-t-xl rounded-b-sm">
+    <div className="flex flex-row justify-between w-full items-center ring-1 ring-zinc-700 px-2 sm:px-4 md:px-6 py-2 rounded-t-xl rounded-b-sm">
       <div className="flex-1 flex flex-row gap-2 items-center">
         <img src="/icon.svg" alt="icon" className="h-6 w-6" />
-        <h1 className="text-xl font-normal">[{data.title}]</h1>
-        <span className="text-sm">{data.version}</span>
+        <h1 className="text-lg sm:text-xl font-normal">[{data.title}]</h1>
+        <span className="text-xs sm:text-sm">{data.version}</span>
       </div>
 
       {isLoading ? (
         <div className="uppercase py-2 animate-pulse">LOADING...</div>
       ) : (
-        <div className="flex flex-row items-center gap-4 max-w-fit w-full self-end">
-          {modelType === "ollama" ? (
-            <LocalModelSelector
-              models={models}
-              setModel={setSelectedOllamaModel}
-              model={selectedOllamaModel}
-            />
-          ) : (
-            <>
-              <APIKeyInput
-                openAIKey={openAIKey}
-                setOpenAIKey={setOpenAIKey}
-                showKey={showKey}
-                setShowKey={setShowKey}
-              />
-
-              <LocalModelSelector
-                models={openAiModels}
-                setModel={setSelectedOpenAiModel}
-                model={selectedOpenAiModel}
-              />
-            </>
-          )}
-
-          <ModelTypeSelector
-            modelType={modelType}
-            setModelType={setModelType}
-          />
-
-          <div className="uppercase py-2">
-            <CurrentTime />
+        <>
+          <div className="md:hidden">
+            <button
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="p-2 text-zinc-400 hover:text-lime-300"
+            >
+              <MenuIcon className="h-5 w-5" />
+            </button>
           </div>
-        </div>
+
+          <div
+            className={`hidden sm:flex flex-col md:flex-row items-center gap-2 md:gap-4 max-w-fit w-full self-end mt-2 md:mt-0`}
+          >
+            {modelType === "ollama" ? (
+              <LocalModelSelector
+                models={models}
+                setModel={setSelectedOllamaModel}
+                model={selectedOllamaModel}
+              />
+            ) : (
+              <>
+                <APIKeyInput
+                  openAIKey={openAIKey}
+                  setOpenAIKey={setOpenAIKey}
+                  showKey={showKey}
+                  setShowKey={setShowKey}
+                />
+
+                <LocalModelSelector
+                  models={openAiModels}
+                  setModel={setSelectedOpenAiModel}
+                  model={selectedOpenAiModel}
+                />
+              </>
+            )}
+
+            <ModelTypeSelector
+              modelType={modelType}
+              setModelType={setModelType}
+            />
+
+            <div className="uppercase py-2">
+              <CurrentTime />
+            </div>
+          </div>
+
+          {showMobileMenu && (
+            <div className="sm:hidden fixed z-30 top-0 left-0 w-screen h-screen flex flex-col items-center justify-center bg-zinc-900/80 backdrop-blur-sm">
+              <button
+                onClick={() => setShowMobileMenu(false)}
+                className="absolute top-6 right-6"
+              >
+                <XIcon className="h-5 w-5" />
+              </button>
+              <div className=" gap-2 flex flex-col w-full px-4 py-2">
+                {modelType === "ollama" ? (
+                  <LocalModelSelector
+                    models={models}
+                    setModel={setSelectedOllamaModel}
+                    model={selectedOllamaModel}
+                  />
+                ) : (
+                  <>
+                    <APIKeyInput
+                      openAIKey={openAIKey}
+                      setOpenAIKey={setOpenAIKey}
+                      showKey={showKey}
+                      setShowKey={setShowKey}
+                    />
+
+                    <LocalModelSelector
+                      models={openAiModels}
+                      setModel={setSelectedOpenAiModel}
+                      model={selectedOpenAiModel}
+                    />
+                  </>
+                )}
+
+                <ModelTypeSelector
+                  modelType={modelType}
+                  setModelType={setModelType}
+                />
+              </div>
+              <div className="text-xs text-zinc-400 p-8 mt-8 text-center flex flex-col gap-4 border border-zinc-700 rounded-sm m-4">
+                <p className="p-2">
+                  If you are not seeing any models for ollama, please serve your
+                  ollama with the following command:
+                </p>
+                <pre className="pt-2 bg-zinc-800 p-2 rounded-sm w-max mx-auto">
+                  $ OLLAMA_HOST=0.0.0.0 ollama serve
+                </pre>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

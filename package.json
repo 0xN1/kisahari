@@ -1,6 +1,6 @@
 {
   "name": "kisahari",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -18,6 +18,7 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toast": "^1.1.5",
+    "caniuse-lite": "^1.0.30001702",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "dexie": "^3.2.5",
