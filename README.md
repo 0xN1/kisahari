@@ -22,7 +22,7 @@ A personal journal app where we keep the data locally, while having the power to
 
 - [x] Option to use OpenAI API
 - [x] Model selection for OpenAI
-- [ ] Mobile responsive design
+- [x] Mobile responsive design
 - [ ] Allow ollama model pull from within the app
 - [ ] Allow theme customization
 - [ ] Support markdown

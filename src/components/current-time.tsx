@@ -15,7 +15,7 @@ const CurrentTime = (props: Props) => {
     }, 1000);
     return () => clearInterval(interval);
   });
-  return <div>{currentTime}</div>;
+  return <div className="text-xs sm:text-sm">{currentTime}</div>;
 };
 
 export default CurrentTime;

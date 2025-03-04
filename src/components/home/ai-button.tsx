@@ -9,7 +9,7 @@ const AIButton = ({
   setShowAI: (showAI: boolean) => void;
 }) => {
   return (
-    <div className="absolute right-8 top-[14vh]">
+    <div className="absolute right-2 sm:right-4 md:right-8 sm:top-[14vh] top-[9vh]">
       <button
         onClick={() => {
           setShowAI(!showAI);
